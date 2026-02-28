@@ -1,158 +1,124 @@
+
+
+Markdown
 # Addis Ababa School Recommender System
 
-A **hybrid recommendation system** to help parents in **Addis Ababa** choose the best schools for their children based on:
+![Python](https://img.shields.io/badge/python-3.12+-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-- **Budget constraints**  
-- **Sub-city proximity**  
-- **School type & stream preference**  
-- **School quality scores**  
-- **Parent–school interaction patterns**
+**A modular hybrid recommendation system to help parents in Addis Ababa select the best schools for their children, combining both content-based and collaborative filtering methods. Built in pure Python and deployed via FastAPI.**
 
-Built with **pure Python**, using a combination of **content-based** and **collaborative filtering** methods, and deployed with **FastAPI**.
+---
+
+## 🚀 Features
+
+- **Data Generation:** Synthetic datasets for ~300 schools, ~2000 parents, and ~10,000 parent–school interactions.
+- **Flexible Preprocessing:** One-hot encoding for categories, normalization for numbers, and reusable preprocessor persistence.
+- **Content-Based Filtering:** Ranks schools by parent preferences, proximity, streams, types, and school quality.
+- **Collaborative Filtering:** Parent similarity via cosine distance and weighted scoring, using only Python and scikit-learn.
+- **Hybrid Recommendation:** Combines multiple scores with adjustable weights, respects budgets.
+- **FastAPI API:** Live, documented recommendations at `/recommend?parent_id=<id>&top_n=<n>`.
+- **Production-Ready:** Modular, extendable, easily maintainable codebase.
 
 ---
 
 ## 📂 Project Structure
-addis-school-recommender/
-├─ api/                  # FastAPI application
-│  └─ main.py
-├─ data/
-│  ├─ raw/               # Generated raw CSV datasets
-│  └─ processed/         # Processed data files
-├─ models/               # Saved preprocessors or model artifacts
-├─ src/                  # Core Python modules
-│  ├─ content_based.py
-│  ├─ collaborative.py
-│  ├─ hybrid.py
-│  ├─ data_loader.py
-│  ├─ preprocessing.py
-│  └─ data_generator.py
-├─ requirements.txt
+
+```bash 
+addis-school-recommender/ 
+├─ api/ 
+│ └─ main.py # FastAPI app 
+├─ data/ 
+│ ├─ raw/ # Raw CSV datasets 
+│ └─ processed/ # Processed files 
+├─ models/ # Model artifacts or preprocessors 
+├─ src/ 
+│ ├─ content_based.py 
+│ ├─ collaborative.py 
+│ ├─ hybrid.py 
+│ ├─ data_loader.py 
+│ ├─ preprocessing.py 
+│ └─ data_generator.py 
+├─ requirements.txt 
 └─ README.md
 
+```
 
 ---
 
-## ⚡ Features
-
-1. **Data Generator**  
-   Generates synthetic datasets:
-   - ~300 schools across all sub-cities of Addis Ababa  
-   - ~2000 parents with preferences  
-   - ~10,000 parent–school interactions  
-
-2. **Preprocessing Pipeline**  
-   - One-hot encoding for categorical features  
-   - Normalization for numeric features  
-   - Saved preprocessor for reuse  
-
-3. **Content-Based Recommender**  
-   - Scores schools based on parent preferences  
-   - Distance-based sub-city scoring  
-   - Stream and type matching  
-   - School quality and academic fit  
-
-4. **Collaborative Filtering**  
-   - User-based similarity (cosine similarity)  
-   - Weighted scoring from similar parents’ ratings  
-   - Fully Python + scikit-learn (no heavy dependencies)  
-
-5. **Hybrid Recommender**  
-   - Combines content + collaborative + quality scores  
-   - Weighted final ranking  
-   - Respects budget constraint  
-
-6. **FastAPI Deployment**  
-   - `/recommend?parent_id=<id>&top_n=<n>`  
-   - Returns top-N school recommendations in JSON  
-   - Auto-generated Swagger docs at `/docs`
-
----
-
-## 🛠 Installation
-
-1. **Clone the repository**
+## ⚡ Quickstart
 
 ```bash
-git clone https://github.com/<your-username>/addis-school-recommender.git
+# 1. Clone the repository
+git clone https://github.com/Tsion-Teklay/addis-school-recommender.git
 cd addis-school-recommender
 
-2. **Create virtual environment**
-
-```bash
+# 2. Create and activate a virtual environment
 python -m venv .venv
-.venv\Scripts\activate      # Windows
-# source .venv/bin/activate # macOS/Linux
+# On Windows:
+.venv\Scripts\activate
+# On macOS/Linux:
+source .venv/bin/activate
 
-3. **Install dependencies**
+# 3. Install dependencies
+pip install -r requirements.txt
 
-```bash
-pip install -r requirments.txt
-
-4. **Generate dataset**
-
-```bash
+# 4. Generate synthetic data
 python src/data_generator.py
 
-5. **Preprocess the dataset**
-
-```bash
+# 5. Preprocess datasets
 python src/preprocessing.py
 
-
-## 🚀 Run the API
-
+# 6. Run the FastAPI server
 uvicorn api.main:app --reload
+Open http://127.0.0.1:8000/docs to explore and test the API.
 
-Visit in browser:
+📝 API Example
+Request:
+GET /recommend?parent_id=1&top_n=5
 
-Swagger docs: http://127.0.0.1:8000/docs
+Sample Response:
 
-Example endpoint: http://127.0.0.1:8000/recommend?parent_id=1&top_n=5
+```json
+JSON
+[
+  {
+    "school_id": 42,
+    "school_name": "ABC Academy",
+    "score": 0.95,
+    "sub_city": "Bole",
+    "type": "Private"
+  },
+  ...
+]
+```
 
-
-## ⚖️ Usage Example
-
-from hybrid import hybrid_recommend
+💻 Usage in Python
+```python
+from src.hybrid import hybrid_recommend
 
 # Get top 5 schools for parent with ID 1
 recommendations = hybrid_recommend(parent_id=1, top_n=5)
 print(recommendations)
-
+```
 
 🔧 Dependencies
-
 Python 3.12+
+pandas
+numpy
+scikit-learn
+fastapi
+uvicorn
 
-pandas, numpy, scikit-learn
+📈 Optional Enhancements
+- Add caching for repeated requests
+- Sub-city filters for custom results
+- Dockerize for containerized deployment
+- Unit tests for all recommendation methods
+- Support for real-world datasets
 
-fastapi, uvicorn
-
-
-🏆 Key Highlights
-
-Production-ready Python project
-
-Modular, maintainable, and extendable code
-
-Combines multiple recommendation strategies
-
-Budget and proximity constraints applied
-
-Fully deployable via FastAPI
-
-📌 Optional Enhancements
-
-Add caching for repeated requests
-
-Add subcity filters for more customized results
-
-Dockerize for deployment
-
-Unit tests for all recommenders
-
-Real dataset integration
+🤝 Contributing
+Contributions are welcome! Feel free to open an issue, make a suggestion, or submit a PR.
 
 📄 License
-
-MIT License © 2026
+MIT License © 2026 Tsion-Teklay
